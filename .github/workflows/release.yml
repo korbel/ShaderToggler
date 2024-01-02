@@ -36,10 +36,10 @@ jobs:
         include:
         - platform: x86
           configuration: Release
-          extension: addon
+          target: 'src/Win32/Release/ShaderToggler.addon'
         - platform: x64
           configuration: Release
-          extension: addon64
+          target: 'src/x64/Release/ShaderToggler.addon64'
 
     steps:
     - name: Checkout repository
@@ -56,11 +56,10 @@ jobs:
       shell: bash
       env:
         ARCHIVE: ShaderToggler_v${{ inputs.tag }}_${{ matrix.platform }}
-        TARGET: src/${{ matrix.platform }}/${{ matrix.configuration }}/ShaderToggler.${{ matrix.extension }}
       run: |
         mkdir "$ARCHIVE"
-        cp {README.md,LICENSE,$TARGET} -u "$ARCHIVE"
-        7z a "$ARCHIVE.zip" ./"$ARCHIVE"/
+        cp {README.md,LICENSE,${{ matrix.target }}} -u "$ARCHIVE"
+        7z a "$ARCHIVE.zip" ./"$ARCHIVE"/*
         certutil -hashfile "$ARCHIVE.zip" SHA256 > "$ARCHIVE.zip.sha256"
         echo "ASSET=$ARCHIVE.zip" >> $GITHUB_ENV
         echo "ASSET_SUM=$ARCHIVE.zip.sha256" >> $GITHUB_ENV
