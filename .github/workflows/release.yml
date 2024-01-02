@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       commit:
-        description: 'Commit reference, it can be branch name of commit hash. This will be used to create the tag if it does not exist.'
+        description: 'Commit reference. It can be branch name or a commit hash. This will be used to create the tag if it does not exist.'
         default: 'main'
         required: false
         type: string
@@ -34,12 +34,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - name: x86
-          platform: Win32
+        - platform: x86
           configuration: Release
           extension: addon
-        - name: x64
-          platform: x64
+        - platform: x64
           configuration: Release
           extension: addon64
 
@@ -57,12 +55,12 @@ jobs:
     - name: Package
       shell: bash
       env:
-        ARCHIVE: ShaderToggler_${{ matrix.name }}_${{ inputs.tag }}
+        ARCHIVE: ShaderToggler_v${{ inputs.tag }}_${{ matrix.platform }}
         TARGET: src/${{ matrix.platform }}/${{ matrix.configuration }}/ShaderToggler.${{ matrix.extension }}
       run: |
         mkdir "$ARCHIVE"
         cp {README.md,LICENSE,$TARGET} -u "$ARCHIVE"
-        7z a "$ARCHIVE.zip" "$ARCHIVE"
+        7z a "$ARCHIVE.zip" ./"$ARCHIVE"/
         certutil -hashfile "$ARCHIVE.zip" SHA256 > "$ARCHIVE.zip.sha256"
         echo "ASSET=$ARCHIVE.zip" >> $GITHUB_ENV
         echo "ASSET_SUM=$ARCHIVE.zip.sha256" >> $GITHUB_ENV
