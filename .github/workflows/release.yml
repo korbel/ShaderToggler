@@ -36,7 +36,7 @@ jobs:
         include:
         - platform: x86
           configuration: Release
-          target: 'src/Win32/Release/ShaderToggler.addon'
+          target: 'src/Release/ShaderToggler.addon'
         - platform: x64
           configuration: Release
           target: 'src/x64/Release/ShaderToggler.addon64'
